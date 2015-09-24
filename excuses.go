@@ -1,4 +1,4 @@
-package jsonresponse // import "resenje.org/jsonresponse"
+package jsonresponse
 
 import (
 	"math/rand"
