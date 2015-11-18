@@ -9,60 +9,6 @@ import (
 	"testing"
 )
 
-// test data
-var responseCodesMap = map[int]func(r Response, w http.ResponseWriter){
-	// 1xx
-	100: Response.Continue,
-	101: Response.SwitchingProtocols,
-
-	// 2xx
-	200: Response.OK,
-	201: Response.Created,
-	202: Response.Accepted,
-	203: Response.NonAuthoritativeInfo,
-	204: Response.NoContent,
-	205: Response.ResetContent,
-	206: Response.PartialContent,
-
-	// 3xx
-	300: Response.MultipleChoices,
-	301: Response.MovedPermanently,
-	302: Response.Found,
-	303: Response.SeeOther,
-	304: Response.NotModified,
-	305: Response.UseProxy,
-	307: Response.TemporaryRedirect,
-
-	// 4xx
-	400: Response.BadRequest,
-	401: Response.Unauthorized,
-	402: Response.PaymentRequired,
-	403: Response.Forbidden,
-	404: Response.NotFound,
-	405: Response.MethodNotAllowed,
-	406: Response.NotAcceptable,
-	407: Response.ProxyAuthRequired,
-	408: Response.RequestTimeout,
-	409: Response.Conflict,
-	410: Response.Gone,
-	411: Response.LengthRequired,
-	412: Response.PreconditionFailed,
-	413: Response.RequestEntityTooLarge,
-	414: Response.RequestURITooLong,
-	415: Response.UnsupportedMediaType,
-	416: Response.RequestedRangeNotSatisfiable,
-	417: Response.ExpectationFailed,
-	418: Response.Teapot,
-
-	// 5xx
-	500: Response.InternalServerError,
-	501: Response.NotImplemented,
-	502: Response.BadGateway,
-	503: Response.ServiceUnavailable,
-	504: Response.GatewayTimeout,
-	505: Response.HTTPVersionNotSupported,
-}
-
 var defaultTransformerBodies = []map[string]interface{}{
 	map[string]interface{}{"data": 1.0},
 	map[string]interface{}{"data": true},
@@ -156,11 +102,123 @@ func TestResponseSerializationDefaultTransformer(t *testing.T) {
 	}
 }
 
-func TestResponseCodes(t *testing.T) {
-	for k, v := range responseCodesMap {
+func TestResponseCodesResponseObject(t *testing.T) {
+	for k, v := range map[int]func(r Response, w http.ResponseWriter){
+		// 1xx
+		100: Response.Continue,
+		101: Response.SwitchingProtocols,
+
+		// 2xx
+		200: Response.OK,
+		201: Response.Created,
+		202: Response.Accepted,
+		203: Response.NonAuthoritativeInfo,
+		204: Response.NoContent,
+		205: Response.ResetContent,
+		206: Response.PartialContent,
+
+		// 3xx
+		300: Response.MultipleChoices,
+		301: Response.MovedPermanently,
+		302: Response.Found,
+		303: Response.SeeOther,
+		304: Response.NotModified,
+		305: Response.UseProxy,
+		307: Response.TemporaryRedirect,
+
+		// 4xx
+		400: Response.BadRequest,
+		401: Response.Unauthorized,
+		402: Response.PaymentRequired,
+		403: Response.Forbidden,
+		404: Response.NotFound,
+		405: Response.MethodNotAllowed,
+		406: Response.NotAcceptable,
+		407: Response.ProxyAuthRequired,
+		408: Response.RequestTimeout,
+		409: Response.Conflict,
+		410: Response.Gone,
+		411: Response.LengthRequired,
+		412: Response.PreconditionFailed,
+		413: Response.RequestEntityTooLarge,
+		414: Response.RequestURITooLong,
+		415: Response.UnsupportedMediaType,
+		416: Response.RequestedRangeNotSatisfiable,
+		417: Response.ExpectationFailed,
+		418: Response.Teapot,
+
+		// 5xx
+		500: Response.InternalServerError,
+		501: Response.NotImplemented,
+		502: Response.BadGateway,
+		503: Response.ServiceUnavailable,
+		504: Response.GatewayTimeout,
+		505: Response.HTTPVersionNotSupported,
+	} {
 		recorder := httptest.NewRecorder()
 		response := Empty()
 		v(response, recorder)
+		if recorder.Code != k {
+			fmt.Printf("HTTP code did not match, got %d, expected: %d\n", recorder.Code, k)
+		}
+	}
+}
+
+func TestResponseCodesGeneric(t *testing.T) {
+	for k, v := range map[int]func(w http.ResponseWriter, response interface{}){
+		// 1xx
+		100: Continue,
+		101: SwitchingProtocols,
+
+		// 2xx
+		200: OK,
+		201: Created,
+		202: Accepted,
+		203: NonAuthoritativeInfo,
+		204: NoContent,
+		205: ResetContent,
+		206: PartialContent,
+
+		// 3xx
+		300: MultipleChoices,
+		301: MovedPermanently,
+		302: Found,
+		303: SeeOther,
+		304: NotModified,
+		305: UseProxy,
+		307: TemporaryRedirect,
+
+		// 4xx
+		400: BadRequest,
+		401: Unauthorized,
+		402: PaymentRequired,
+		403: Forbidden,
+		404: NotFound,
+		405: MethodNotAllowed,
+		406: NotAcceptable,
+		407: ProxyAuthRequired,
+		408: RequestTimeout,
+		409: Conflict,
+		410: Gone,
+		411: LengthRequired,
+		412: PreconditionFailed,
+		413: RequestEntityTooLarge,
+		414: RequestURITooLong,
+		415: UnsupportedMediaType,
+		416: RequestedRangeNotSatisfiable,
+		417: ExpectationFailed,
+		418: Teapot,
+
+		// 5xx
+		500: InternalServerError,
+		501: NotImplemented,
+		502: BadGateway,
+		503: ServiceUnavailable,
+		504: GatewayTimeout,
+		505: HTTPVersionNotSupported,
+	} {
+		recorder := httptest.NewRecorder()
+		v(recorder, "")
 		if recorder.Code != k {
 			fmt.Printf("HTTP code did not match, got %d, expected: %d\n", recorder.Code, k)
 		}
