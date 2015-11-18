@@ -31,24 +31,29 @@ import (
 	"sync"
 )
 
+// ResponseTransformer is function that transforms response before it is send
+// to client. Default implementation is provided, but it can suite
+// more specific needs.
+type ResponseTransformer func(resp Response, httpCode int) (headers map[string]string, result interface{})
+
 var (
 	transformerLock = &sync.Mutex{}
 
 	// Transformer for response. Default implementation wraps response in
 	// SBG envelope (with status and message).
-	transformer = defaultTransformer
+	transformer ResponseTransformer = defaultTransformer
 )
 
 var (
 	contentTypeHeaderLock = &sync.Mutex{}
 
 	// Default Content-Type header for Json responses.
-	defaultContentTypeHeader = "application/json; charset=utf-8"
+	defaultContentTypeHeader string = "application/json; charset=utf-8"
 )
 
 // SetTransformer sets function that will process response additionally.
 // Default implementation just wraps response value in map with key "data".
-func SetTransformer(t func(resp Response, httpCode int) (headers map[string]string, result interface{})) {
+func SetTransformer(t ResponseTransformer) {
 	transformerLock.Lock()
 	defer transformerLock.Unlock()
 	transformer = t
