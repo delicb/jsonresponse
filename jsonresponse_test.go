@@ -75,14 +75,14 @@ func TestCustomTransformerCalled(t *testing.T) {
 		isCalled = true
 		return map[string]string{}, map[string]string{"value": "do not care what I got"}
 	}
-	SetTransfromer(customTransformer)
+	SetTransformer(customTransformer)
 	recorder := httptest.NewRecorder()
 	New("does not matter").OK(recorder)
 	if !isCalled {
 		fmt.Println("Custom transformer not called")
 		t.Fail()
 	}
-	ResetTransfomer()
+	ResetTransformer()
 }
 
 func TestCustomTransformerSettingHeaders(t *testing.T) {
@@ -92,14 +92,14 @@ func TestCustomTransformerSettingHeaders(t *testing.T) {
 		return map[string]string{customHeaderKey: customHeaderValue}, map[string]string{"value": "do not care what I got"}
 	}
 
-	SetTransfromer(customTransformer)
+	SetTransformer(customTransformer)
 	recorder := httptest.NewRecorder()
 	New("does not matter").OK(recorder)
 	if recorder.Header().Get(customHeaderKey) != customHeaderValue {
 		fmt.Println("Custom transformer header not applied.")
 		t.Fail()
 	}
-	ResetTransfomer()
+	ResetTransformer()
 }
 
 func TestCreationRaw(t *testing.T) {

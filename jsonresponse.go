@@ -48,14 +48,14 @@ var (
 
 // SetTransformer sets function that will process response additionally.
 // Default implementation just wraps response value in map with key "data".
-func SetTransfromer(t func(resp Response, httpCode int) (headers map[string]string, result interface{})) {
+func SetTransformer(t func(resp Response, httpCode int) (headers map[string]string, result interface{})) {
 	transformerLock.Lock()
 	defer transformerLock.Unlock()
 	transformer = t
 }
 
 // ResetTransformer resets current transformer to default one.
-func ResetTransfomer() {
+func ResetTransformer() {
 	transformerLock.Lock()
 	defer transformerLock.Unlock()
 	transformer = defaultTransformer
@@ -212,7 +212,7 @@ func (r Response) NoContent(w http.ResponseWriter) {
 }
 
 // ResetContent sends response to client with HTTP status 205.
-//The server successfully processed the request, but is not returning any content.
+// The server successfully processed the request, but is not returning any content.
 // Unlike a NoContent response, this response requires that the requester reset
 // the document view.
 func (r Response) ResetContent(w http.ResponseWriter) {
