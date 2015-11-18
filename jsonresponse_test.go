@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"strings"
 )
 
 var defaultTransformerBodies = []map[string]interface{}{
@@ -282,5 +283,22 @@ func TestExcuseInDefaultTransformer(t *testing.T) {
 			fmt.Println("Did not get programming excuse in response.")
 			t.Fail()
 		}
+	}
+}
+
+func TestIndent(t *testing.T) {
+	SetIndent(true)
+	recorder := httptest.NewRecorder()
+	New(map[string]string{"foo": "bar"}).OK(recorder)
+	responseString := recorder.Body.String()
+	intendedResponse := `{
+	"data": {
+		"foo": "bar"
+	}
+}`
+
+	if strings.Trim(responseString, "\n") != intendedResponse {
+		fmt.Println("Response not intended.")
+		t.Fail()
 	}
 }
