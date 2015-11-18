@@ -224,3 +224,63 @@ func TestResponseCodesGeneric(t *testing.T) {
 		}
 	}
 }
+
+func TestChangeDefaultContentTypeHeader(t *testing.T) {
+	SetDefaultContentTypeHeader("application/jsonresponse")
+	recorder := httptest.NewRecorder()
+	New("").OK(recorder)
+	if ct, ok := recorder.HeaderMap["Content-Type"]; ok {
+		if len(ct) != 1 {
+			fmt.Println("Did not get only one content type header!")
+			t.Fail()
+		}
+		val := ct[0]
+		if val != "application/jsonresponse" {
+			fmt.Println("Default content type header not set.")
+			t.Fail()
+		}
+	} else {
+		fmt.Println("Content-Type header not returned.")
+		t.Fail()
+	}
+}
+
+func TestSettingCustomHeaders(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	New("").Header("X-Custom-Header", "header-value").OK(recorder)
+	if xch, ok := recorder.HeaderMap["X-Custom-Header"]; ok {
+		if len(xch) != 1 {
+			fmt.Println("Did not get only one value for custom header!")
+			t.Fail()
+		}
+		val := xch[0]
+		if val != "header-value" {
+			fmt.Println("Custom header value did not match.")
+			t.Fail()
+		}
+	} else {
+		fmt.Println("X-Custom-Header header not returned.")
+		t.Fail()
+	}
+}
+
+func TestExcuseInDefaultTransformer(t *testing.T) {
+	recorder := httptest.NewRecorder()
+
+	unmarshaled := make(map[string]interface{})
+	New("").WithProgrammingExcuse().OK(recorder)
+	if err := json.Unmarshal(recorder.Body.Bytes(), &unmarshaled); err != nil {
+		fmt.Println("Failed do unmarshal response!: ", err)
+		t.Fail()
+	} else {
+		if excuse, ok := unmarshaled["programming-excuse"]; ok {
+			if excuse == "" {
+				fmt.Println("Got empty string for programming excuse.")
+				t.Fail()
+			}
+		} else {
+			fmt.Println("Did not get programming excuse in response.")
+			t.Fail()
+		}
+	}
+}
