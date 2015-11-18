@@ -26,9 +26,9 @@ package jsonresponse
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"sync"
+	"fmt"
 )
 
 // ResponseTransformer is function that transforms response before it is send
@@ -87,12 +87,6 @@ func defaultTransformer(resp Response, httpCode int) (headers map[string]string,
 	return h, r
 }
 
-// serialize encodes body into JSON and writes it to provided writer.
-func serialize(body interface{}, w io.Writer) (err error) {
-	encoder := json.NewEncoder(w)
-	return encoder.Encode(body)
-}
-
 // Response object, only contains object to return.
 type Response struct {
 	// Object to return, should be json serializable, or serialization will panic.
@@ -101,6 +95,13 @@ type Response struct {
 	Excuse  string
 }
 
+func serializeToString(data interface{}) (s string ) {
+	b, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
 // New creates response object with provided data and returns it.
 func New(data interface{}) (r Response) {
 	return Response{Data: data, Headers: map[string]string{}}
@@ -145,10 +146,7 @@ func (r Response) Response(w http.ResponseWriter, httpCode int) {
 	w.WriteHeader(httpCode)
 
 	if body != nil {
-		// encode body directly to provided ResponseWriter
-		if err := serialize(body, w); err != nil {
-			panic(err)
-		}
+		fmt.Fprint(w, serializeToString(body) + "\n")
 	}
 }
 
