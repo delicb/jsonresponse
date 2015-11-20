@@ -28,7 +28,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"fmt"
-	"bytes"
 )
 
 // Response object, only contains object to return.
@@ -40,18 +39,19 @@ type Response struct {
 }
 
 func serializeToString(data interface{}) (s string ) {
-	b, err := json.Marshal(data)
+	var b []byte
+	var err error
+	if indent {
+		b, err = json.MarshalIndent(data, "", "\t")
+	} else {
+		b, err = json.Marshal(data)
+	}
 	if err != nil {
 		panic(err)
 	}
-	if indent {
-		var out bytes.Buffer
-		json.Indent(&out, b, "", "\t")
-		return out.String()
-	} else {
-		return string(b)
-	}
+	return string(b)
 }
+
 // New creates response object with provided data and returns it.
 func New(data interface{}) (r Response) {
 	return Response{Data: data, Headers: map[string]string{}}
