@@ -26,8 +26,8 @@ package jsonresponse
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
 // Response object, only contains object to return.
@@ -38,7 +38,7 @@ type Response struct {
 	Excuse  string
 }
 
-func serializeToString(data interface{}) (s string ) {
+func serializeToString(data interface{}) (s string) {
 	var b []byte
 	var err error
 	if indent {
@@ -96,7 +96,7 @@ func (r Response) Response(w http.ResponseWriter, httpCode int) {
 	w.WriteHeader(httpCode)
 
 	if body != nil {
-		fmt.Fprint(w, serializeToString(body) + "\n")
+		fmt.Fprint(w, serializeToString(body)+"\n")
 	}
 }
 

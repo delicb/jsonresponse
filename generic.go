@@ -1,4 +1,4 @@
-package jsonresponse
+package jsonresponse // import "go.delic.rs/jsonresponse"
 
 import (
 	"encoding/json"

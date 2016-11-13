@@ -11,7 +11,7 @@ func PassthroughTransformer(resp Response, httpCode int) (headers map[string]str
 }
 
 func MessageCodeTransformer(dataField string, codeField string) ResponseTransformer {
-	return ResponseTransformer(func (resp Response, httpCode int) (headers map[string]string, result interface{}) {
+	return ResponseTransformer(func(resp Response, httpCode int) (headers map[string]string, result interface{}) {
 		h := map[string]string{}
 		r := map[string]interface{}{
 			dataField: resp.Data,
@@ -21,9 +21,8 @@ func MessageCodeTransformer(dataField string, codeField string) ResponseTransfor
 	})
 }
 
-
 func MessageCodeExcuseTransformer(dataField string, codeField string) ResponseTransformer {
-	return ResponseTransformer(func (resp Response, httpCode int) (headers map[string]string, result interface{}) {
+	return ResponseTransformer(func(resp Response, httpCode int) (headers map[string]string, result interface{}) {
 		h := map[string]string{}
 		r := map[string]interface{}{
 			dataField: resp.Data,
@@ -35,7 +34,6 @@ func MessageCodeExcuseTransformer(dataField string, codeField string) ResponseTr
 		return h, r
 	})
 }
-
 
 // defaultTransformer just wraps response dict with key data.
 func defaultTransformer(resp Response, httpCode int) (headers map[string]string, result interface{}) {

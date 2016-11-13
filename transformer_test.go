@@ -67,7 +67,6 @@ func TestMessageCodeTransformer(t *testing.T) {
 	}
 }
 
-
 func TestMessageCodeExcuseTransformer(t *testing.T) {
 	status := http.StatusOK
 	for dataField, codeField := range map[string]string{
