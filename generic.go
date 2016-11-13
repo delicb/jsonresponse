@@ -6,11 +6,14 @@ import (
 	"net/http"
 )
 
+// MessageResponse is default wrapper structure for JSON http response.
 type MessageResponse struct {
 	Code    int    `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
+// Respond serializes provided response to JSON and writes it to provided writer
+// with status code.
 func Respond(w http.ResponseWriter, statusCode int, response interface{}) {
 	if response == nil {
 		response = &MessageResponse{}

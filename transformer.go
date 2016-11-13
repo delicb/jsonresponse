@@ -10,6 +10,8 @@ func PassthroughTransformer(resp Response, httpCode int) (headers map[string]str
 	return make(map[string]string), resp.Data
 }
 
+// MessageCodeTransformer wraps response into map with data and code fields.
+// Data and code fields can be defined as function parameters.
 func MessageCodeTransformer(dataField string, codeField string) ResponseTransformer {
 	return ResponseTransformer(func(resp Response, httpCode int) (headers map[string]string, result interface{}) {
 		h := map[string]string{}
@@ -21,6 +23,8 @@ func MessageCodeTransformer(dataField string, codeField string) ResponseTransfor
 	})
 }
 
+// MessageCodeExcuseTransformer is same as MessageCodeTransformer, except that
+// it adds "programming-excuse" field with Excuse field from response.
 func MessageCodeExcuseTransformer(dataField string, codeField string) ResponseTransformer {
 	return ResponseTransformer(func(resp Response, httpCode int) (headers map[string]string, result interface{}) {
 		h := map[string]string{}

@@ -14,7 +14,7 @@ var (
 	contentTypeHeaderLock = &sync.Mutex{}
 
 	// Default Content-Type header for Json responses.
-	defaultContentTypeHeader string = "application/json; charset=utf-8"
+	defaultContentTypeHeader = "application/json; charset=utf-8"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 	// indent sets flag that indicates that all json responses will be
 	// indented before returned. This can be useful for debugging when
 	// consumer of JSON response is developer and not other service.
-	indent bool = false
+	indent = false
 )
 
 // SetTransformer sets function that will process response additionally.
