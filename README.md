@@ -2,4 +2,4 @@
 
 ## Installation
 
-Run `go get go.delic.rs/jsonresponse` from command line.
+Run `go get github.com/delicb/jsonresponse` from command line.
